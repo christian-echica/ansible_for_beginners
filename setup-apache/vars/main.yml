@@ -1,0 +1,4 @@
+---
+# vars file for setup-apache
+port: 8082
+ansible_sudo_pass: redhat

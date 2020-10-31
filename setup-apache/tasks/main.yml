@@ -1,0 +1,27 @@
+---
+# tasks file for setup-apache
+- name: install package
+  yum:
+    name: httpd
+    state: latest
+  when: ansible_os_family == 'RedHat'
+
+- name: start the apache
+  service:
+    name: httpd
+    state: started
+
+- name: copy index.html
+  copy:
+    src: /opt/ansible/index.html
+    dest: /var/www/html
+    mode: 0666
+
+- name: replace port by updating the httpd.conf
+  lineinfile:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^Listen '
+    insertafter: '^#Listen '
+    line: Listen {{ port }}
+  when: ansible_os_family == 'RedHat'
+

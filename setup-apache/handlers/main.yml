@@ -1,0 +1,11 @@
+---
+# handlers file for setup-apache
+- name: start_apache
+  service:
+    name: httpd
+    state: started
+- name: restart_apache
+  service:
+    name: httpd
+    state: restarted 
+

@@ -1,0 +1,11 @@
+---
+- name: This playbook is to create a local user
+  hosts: all
+  become: true
+  vars_files:
+          - user.yml
+  tasks:
+  - name: user_creation "{{ user }}"
+    user: 
+      name: "{{ item }}"
+    with_items: "{{ user }}"

@@ -1,0 +1,41 @@
+---
+- name: this playbook installs apache with using roles
+  hosts: all
+  become: true
+  vars:
+          port: 8082
+          ansible_sudo_pass: redhat
+  tasks:
+          - name: install package
+            yum:
+                    name: httpd
+                    state: latest
+            when: ansible_os_family == 'RedHat'
+            notify: start_apache
+
+          - name: copy index.html
+            copy:
+                    src: /opt/ansible/index.html
+                    dest: /var/www/html
+                    mode: 0666
+
+          - name: replace port by updating the httpd.conf
+            lineinfile:
+                    path: /etc/httpd/conf/httpd.conf
+                    regexp: '^Listen '
+                    insertafter: '^#Listen '
+                    line: Listen {{ port }} 
+            when: ansible_os_family == 'RedHat'
+            notify: restart_apache
+
+  handlers:
+          - name: start_apache
+            service:
+                    name: httpd
+                    state: started
+            tags: start_apache
+
+          - name: restart_apache
+            service:
+                    name: httpd
+                    state: restarted
